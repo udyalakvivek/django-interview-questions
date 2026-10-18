@@ -2,11 +2,7 @@
 
 80 questions in simple English, grouped by topic for interview preparation. Short examples are included where they help explain the answer.
 
-The original 15 question topics are retained and corrected. This guide also covers all 59 topics on the [GeeksforGeeks interview page](https://www.geeksforgeeks.org/python/django-interview-questions/) reviewed on 19 October 2026, plus additional fundamentals. Answers and examples are written independently. A coverage table at the end maps GFG question numbers to this guide.
-
-**Example baseline:** Django 5.2; this does not mean it is the latest release. Version-sensitive details are identified. Django REST framework (DRF) is a separate package.
-
-**Example conventions:** This repository contains notes, not a runnable Django project. Examples assume a project named `config` and an installed app named `books`. ORM snippets run in `python manage.py shell` after migrating the models in question 21. Import them with `from books.models import Author, Book, Tag`. Other model definitions demonstrate separate concepts; do not paste every alternative into the same file.
+Examples use Django 5.2, a project named `config`, and an installed app named `books`. ORM snippets run in `python manage.py shell` after migrating the models in question 21. Import them with `from books.models import Author, Book, Tag`. Other model definitions demonstrate separate concepts; do not paste every alternative into the same file.
 
 ## Contents
 
@@ -19,7 +15,6 @@ The original 15 question topics are retained and corrected. This guide also cove
 - [Files, caching, and signals (65–69)](#files-caching-and-signals)
 - [APIs and serialization (70–72)](#apis-and-serialization)
 - [Testing and everyday development (73–80)](#testing-and-everyday-development)
-- [GFG coverage checklist](#gfg-coverage-checklist)
 
 ## Foundations and setup
 
@@ -118,7 +113,7 @@ import os
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 ```
 
-Keep production secrets outside source control. Development, testing, and production can use different settings. See [Django settings](https://docs.djangoproject.com/en/5.2/topics/settings/).
+Keep production secrets outside source control. Development, testing, and production can use different settings.
 
 ### 8. What is the difference between django-admin and manage.py?
 
@@ -189,8 +184,6 @@ Web server → HTTP response → Client
 
 Django converts exceptions into appropriate error responses. View/rendering exceptions can reach `process_exception()` hooks. Known errors can become 404 or 403 responses; unexpected errors normally become 500 responses. A streaming response's body may be consumed later as the server sends it.
 
-See [middleware processing](https://docs.djangoproject.com/en/5.2/topics/http/middleware/) and [request/response objects](https://docs.djangoproject.com/en/5.2/ref/request-response/).
-
 ### 12. What is middleware? Why does its order matter?
 
 Middleware wraps request handling for shared tasks such as sessions, authentication, logging, and security headers.
@@ -233,7 +226,7 @@ urlpatterns = [
 
 `/books/7/` calls `book_detail(request, pk=7)`. `path()` supports `int`, `str`, `slug`, `uuid`, and `path` converters. `include()` delegates to another URL configuration.
 
-`re_path()` supports regular expressions, for example `re_path(r"^year/(?P<year>[0-9]{4})/$", views.year_archive)` if that view is defined. Regex captures are strings unless converted in your code. See the [URL dispatcher](https://docs.djangoproject.com/en/5.2/topics/http/urls/).
+`re_path()` supports regular expressions, for example `re_path(r"^year/(?P<year>[0-9]{4})/$", views.year_archive)` if that view is defined. Regex captures are strings unless converted in your code.
 
 ### 14. Why use named URLs, namespaces, reverse(), and reverse_lazy()?
 
@@ -283,7 +276,7 @@ class BookListView(LoginRequiredMixin, ListView):
     ordering = ["pk"]
 ```
 
-Put `LoginRequiredMixin` before the generic view. Configure a login URL and create the template. See [generic display views](https://docs.djangoproject.com/en/5.2/topics/class-based-views/generic-display/).
+Put `LoginRequiredMixin` before the generic view. Configure a login URL and create the template.
 
 ### 17. What does HttpRequest contain? How do GET, POST, and JSON differ?
 
@@ -315,7 +308,7 @@ def book_detail(request, pk):
 
 Create `books/templates/books/detail.html`, for example with `<h1>{{ book.title }}</h1>`. `get_object_or_404()` turns a missing-object error into HTTP 404; it does not hide multiple-match errors.
 
-For JSON, use `return JsonResponse({"title": book.title})` after importing `JsonResponse`. To redirect, use `return redirect("books:detail", pk=book.pk)` after importing `redirect`. See [Django shortcuts](https://docs.djangoproject.com/en/5.2/topics/http/shortcuts/).
+For JSON, use `return JsonResponse({"title": book.title})` after importing `JsonResponse`. To redirect, use `return redirect("books:detail", pk=book.pk)` after importing `redirect`.
 
 ### 19. What are common Django exceptions?
 
@@ -335,7 +328,7 @@ For JSON, use `return JsonResponse({"title": book.title})` after importing `Json
 | `NoReverseMatch` | URL name/arguments could not be reversed |
 | `ViewDoesNotExist` | A requested view could not be resolved |
 
-An empty `filter()` normally returns an empty QuerySet. `EmptyResultSet` is mainly an internal query-compilation signal, not the normal no-rows result. See [exceptions](https://docs.djangoproject.com/en/5.2/ref/exceptions/).
+An empty `filter()` normally returns an empty QuerySet. `EmptyResultSet` is mainly an internal query-compilation signal, not the normal no-rows result.
 
 ### 20. Compare WSGI and ASGI. Does Django support async?
 
@@ -350,7 +343,7 @@ async def book_count(request):
     return JsonResponse({"total": total})
 ```
 
-Async helps concurrent I/O, not CPU-heavy work by itself. Use async-compatible libraries and ORM methods. In Django 5.2, put transactional operations in a synchronous function called through `sync_to_async()`. A fully async request stack needs compatible middleware and ASGI. See [async support](https://docs.djangoproject.com/en/5.2/topics/async/).
+Async helps concurrent I/O, not CPU-heavy work by itself. Use async-compatible libraries and ORM methods. In Django 5.2, put transactional operations in a synchronous function called through `sync_to_async()`. A fully async request stack needs compatible middleware and ASGI.
 
 ## Models, relationships, and migrations
 
@@ -402,7 +395,7 @@ Django adds a primary key, normally `id`, if none is defined. `pk` refers to the
 | `EmailField()` / `URLField()` | Text with format validation |
 | `JSONField()` | JSON-compatible data on supported backends |
 
-Specify `CharField.max_length` for clarity and portability; some backends allow unlimited `VARCHAR`. `TextField.max_length` does not enforce a model/database length limit. For mutable defaults use callables, such as `JSONField(default=dict)`, rather than `default={}`. See [model fields](https://docs.djangoproject.com/en/5.2/ref/models/fields/).
+Specify `CharField.max_length` for clarity and portability; some backends allow unlimited `VARCHAR`. `TextField.max_length` does not enforce a model/database length limit. For mutable defaults use callables, such as `JSONField(default=dict)`, rather than `default={}`.
 
 ### 23. What is the difference between null=True and blank=True?
 
@@ -493,7 +486,7 @@ class Meta:
     ]
 ```
 
-Use `db_table`, not `table_name`. Prefer `UniqueConstraint` for new uniqueness rules. Indexes can speed up reads but cost storage and add write overhead. See [Meta options](https://docs.djangoproject.com/en/5.2/ref/models/options/).
+Use `db_table`, not `table_name`. Prefer `UniqueConstraint` for new uniqueness rules. Indexes can speed up reads but cost storage and add write overhead.
 
 ### 28. What model inheritance styles does Django support?
 
@@ -516,7 +509,7 @@ class Note(TimeStamped):
     text = models.TextField()
 ```
 
-Only `Note` gets a table. With concrete `Place` and `Restaurant(Place)` models, both get tables joined by an automatic one-to-one parent link. Django does not automatically implement discriminator-based single-table inheritance. See [model inheritance](https://docs.djangoproject.com/en/5.2/topics/db/models/#model-inheritance).
+Only `Note` gets a table. With concrete `Place` and `Restaurant(Place)` models, both get tables joined by an automatic one-to-one parent link. Django does not automatically implement discriminator-based single-table inheritance.
 
 ### 29. What is a proxy model?
 
@@ -549,7 +542,7 @@ class UppercaseCharField(models.CharField):
 
 Import it in a model and use `code = UppercaseCharField(max_length=20)`. The in-memory attribute may remain unchanged until reloaded. Raw SQL bypasses this conversion.
 
-For complex types, `to_python()` converts input, `from_db_value()` converts retrieved data, `db_type()` defines storage, and `deconstruct()` preserves custom constructor arguments in migrations. Simple validation usually needs a validator instead of a new field. See [custom model fields](https://docs.djangoproject.com/en/5.2/howto/custom-model-fields/).
+For complex types, `to_python()` converts input, `from_db_value()` converts retrieved data, `db_type()` defines storage, and `deconstruct()` preserves custom constructor arguments in migrations. Simple validation usually needs a validator instead of a new field.
 
 ### 31. What are migrations? Compare makemigrations and migrate.
 
@@ -564,7 +557,7 @@ python manage.py sqlmigrate books 0001
 
 `makemigrations` compares models with migration state and generates Python migration files. It does not apply database changes. `migrate` applies pending operations. `showmigrations` lists status; `sqlmigrate` shows a migration's SQL.
 
-Commit migrations alongside model changes. Data migrations can use `RunPython` and historical models from `apps.get_model()`. Avoid editing shared, applied migrations without coordination. See [migrations](https://docs.djangoproject.com/en/5.2/topics/migrations/).
+Commit migrations alongside model changes. Data migrations can use `RunPython` and historical models from `apps.get_model()`. Avoid editing shared, applied migrations without coordination.
 
 ### 32. How do you connect Django to a database?
 
@@ -585,13 +578,13 @@ DATABASES = {
 }
 ```
 
-Then run `python manage.py migrate`. Bundled backends support PostgreSQL, MariaDB/MySQL, Oracle, and SQLite; supported driver/database versions depend on Django's version. See [database support](https://docs.djangoproject.com/en/5.2/ref/databases/).
+Then run `python manage.py migrate`. Bundled backends support PostgreSQL, MariaDB/MySQL, Oracle, and SQLite; supported driver/database versions depend on Django's version.
 
 ### 33. What is NoSQL? Can Django use it?
 
 NoSQL databases use structures such as documents, key–value entries, or graphs instead of traditional relational tables.
 
-Django's bundled backends target relational databases. External clients and separately maintained backends can connect other databases. MongoDB provides a [Django MongoDB Backend](https://www.mongodb.com/docs/languages/python/django-mongodb/current/); check its version compatibility and feature limitations. It is not shipped with Django. Redis can be used as a cache while a relational database remains the main data store.
+Django's bundled backends target relational databases. External clients and separately maintained backends can connect other databases. MongoDB provides a Django MongoDB Backend; check its version compatibility and feature limitations. It is not shipped with Django. Redis can be used as a cache while a relational database remains the main data store.
 
 ## ORM and database performance
 
@@ -610,7 +603,7 @@ book.save(update_fields=["stock"])
 book.delete()
 ```
 
-The ORM handles parameterized query values and relationships. Database-specific behavior can still matter when changing backends. See [making queries](https://docs.djangoproject.com/en/5.2/topics/db/queries/).
+The ORM handles parameterized query values and relationships. Database-specific behavior can still matter when changing backends.
 
 ### 35. What is a QuerySet? What does lazy evaluation mean?
 
@@ -624,7 +617,7 @@ results = list(books)                    # Execute and fetch results
 
 Iteration, `list()`, `len()`, and truth testing can evaluate a QuerySet. A normal evaluated QuerySet caches results for reuse. Refining it creates another QuerySet with its own query/cache; evaluation does not make all future filtering impossible.
 
-`count()` and `exists()` usually issue their own queries without filling the full result cache. Slicing without a step normally remains lazy; a step forces evaluation. See the [QuerySet API](https://docs.djangoproject.com/en/5.2/ref/models/querysets/).
+`count()` and `exists()` usually issue their own queries without filling the full result cache. Slicing without a step normally remains lazy; a step forces evaluation.
 
 ### 36. Compare all(), get(), filter(), and first().
 
@@ -670,8 +663,6 @@ Book.objects.filter(pk=7, stock__gt=0).update(stock=F("stock") - 1)
 
 The update decreases stock directly in the database, avoiding a Python read–modify–write race for that operation. Check the returned update count to know whether a row matched. This does not make a whole checkout workflow atomic; related operations may need a transaction.
 
-See [query expressions](https://docs.djangoproject.com/en/5.2/ref/models/expressions/).
-
 ### 39. What do values(), values_list(), distinct(), and other helpers return?
 
 ```python
@@ -698,7 +689,7 @@ for author in authors:
     print(author.name, author.book_count)
 ```
 
-Use `Sum`, `Min`, and `Max` for other summaries. `Count("books")` uses the reverse relationship from question 21. See [aggregation](https://docs.djangoproject.com/en/5.2/topics/db/aggregation/).
+Use `Sum`, `Min`, and `Max` for other summaries. `Count("books")` uses the reverse relationship from question 21.
 
 ### 41. Compare select_related() and prefetch_related().
 
@@ -713,7 +704,7 @@ authors = Author.objects.prefetch_related("books")
 books_with_tags = Book.objects.prefetch_related("tags")
 ```
 
-Prefetching also supports single-valued relationships. It costs extra memory, and a different related query, such as `author.books.filter(...)`, may not use the prefetched `.all()` results. See [related-object loading](https://docs.djangoproject.com/en/5.2/ref/models/querysets/#select-related).
+Prefetching also supports single-valued relationships. It costs extra memory, and a different related query, such as `author.books.filter(...)`, may not use the prefetched `.all()` results.
 
 ### 42. What is the N+1 query problem?
 
@@ -742,7 +733,7 @@ Measure first, then fix the expensive work.
 - Paginate large lists and avoid repeated queries inside loops.
 - Use bulk operations where their behavior fits.
 
-Accessing a deferred field later can trigger another query. An extra `exists()` followed by fetching the same results can also add unnecessary work. See [database optimization](https://docs.djangoproject.com/en/5.2/topics/db/optimization/).
+Accessing a deferred field later can trigger another query. An extra `exists()` followed by fetching the same results can also add unnecessary work.
 
 ### 44. What is a model manager? How do you reuse query logic?
 
@@ -759,7 +750,7 @@ class BookQuerySet(models.QuerySet):
 # objects = BookQuerySet.as_manager()
 ```
 
-Then use `Book.objects.available().order_by("title")`. See [managers](https://docs.djangoproject.com/en/5.2/topics/db/managers/).
+Then use `Book.objects.available().order_by("title")`.
 
 ### 45. Compare save(), update(), and bulk operations.
 
@@ -789,7 +780,7 @@ with transaction.atomic():
     book.save(update_fields=["stock"])
 ```
 
-`select_for_update()` locks selected rows on supporting databases until the transaction ends; SQLite does not provide this row-lock behavior. Transactions alone do not solve every concurrent update problem. Database rollbacks also do not undo external actions such as email. Use `transaction.on_commit()` to schedule an action after a successful commit. Catch database exceptions outside the relevant atomic block. See [transactions](https://docs.djangoproject.com/en/5.2/topics/db/transactions/).
+`select_for_update()` locks selected rows on supporting databases until the transaction ends; SQLite does not provide this row-lock behavior. Transactions alone do not solve every concurrent update problem. Database rollbacks also do not undo external actions such as email. Use `transaction.on_commit()` to schedule an action after a successful commit. Catch database exceptions outside the relevant atomic block.
 
 ### 47. How do multiple databases and sharding work?
 
@@ -802,7 +793,7 @@ books = Book.objects.using("tenant_1").all()
 
 A database router can select aliases through `db_for_read()`, `db_for_write()`, `allow_relation()`, and `allow_migrate()`.
 
-**Sharding** splits records across databases, for example by tenant. Django provides multi-database tools, not automatic transparent sharding. You must design routing, migrations, IDs, and queries across shards. A router cannot always infer a shard from arbitrary filters; explicit tenant context or `.using()` may be needed. Cross-database foreign keys are unsupported, and `atomic(using=...)` covers only that database, not a distributed transaction. See [multiple databases](https://docs.djangoproject.com/en/5.2/topics/db/multi-db/).
+**Sharding** splits records across databases, for example by tenant. Django provides multi-database tools, not automatic transparent sharding. You must design routing, migrations, IDs, and queries across shards. A router cannot always infer a shard from arbitrary filters; explicit tenant context or `.using()` may be needed. Cross-database foreign keys are unsupported, and `atomic(using=...)` covers only that database, not a distributed transaction.
 
 ## Templates, forms, and validation
 
@@ -816,7 +807,7 @@ A template is text, usually HTML, containing placeholders and template tags. Con
 <p>By {{ book.author.name }}</p>
 ```
 
-The view in question 18 supplies `book`. With `APP_DIRS=True` in the Django template backend, installed apps' template directories are searched. `TEMPLATES[0]["DIRS"]` can also include project-wide directories. Use app-namespaced paths to prevent filename clashes. See [templates](https://docs.djangoproject.com/en/5.2/topics/templates/).
+The view in question 18 supplies `book`. With `APP_DIRS=True` in the Django template backend, installed apps' template directories are searched. `TEMPLATES[0]["DIRS"]` can also include project-wide directories. Use app-namespaced paths to prevent filename clashes.
 
 ### 49. How do template inheritance and include encourage reuse?
 
@@ -837,7 +828,7 @@ Put the shared layout in a base template and override named blocks in child temp
 {% endblock %}
 ```
 
-Create the base file in a configured template directory. For a shared navigation file, use `{% include "books/nav.html" %}` after creating that file. Keep business logic outside templates. See [template inheritance](https://docs.djangoproject.com/en/5.2/ref/templates/language/#template-inheritance).
+Create the base file in a configured template directory. For a shared navigation file, use `{% include "books/nav.html" %}` after creating that file. Keep business logic outside templates.
 
 ### 50. What are template variables, tags, and filters?
 
@@ -853,7 +844,7 @@ Create the base file in a configured template directory. For a shared navigation
 {% endfor %}
 ```
 
-HTML autoescaping is enabled by default in normal Django templates. Do not mark untrusted input `safe`; that can introduce XSS. See [template language](https://docs.djangoproject.com/en/5.2/ref/templates/language/).
+HTML autoescaping is enabled by default in normal Django templates. Do not mark untrusted input `safe`; that can introduce XSS.
 
 ### 51. What is a context processor?
 
@@ -866,13 +857,13 @@ def site_info(request):
     return {"site_name": "Book Corner"}
 ```
 
-Add `"books.context_processors.site_info"` to the Django backend's `TEMPLATES[0]["OPTIONS"]["context_processors"]` list. Then `{{ site_name }}` is available in templates rendered with a request context, such as through `render(request, ...)`. Plain context rendering does not automatically run these processors. Keep them lightweight. See [RequestContext](https://docs.djangoproject.com/en/5.2/ref/templates/api/#using-requestcontext).
+Add `"books.context_processors.site_info"` to the Django backend's `TEMPLATES[0]["OPTIONS"]["context_processors"]` list. Then `{{ site_name }}` is available in templates rendered with a request context, such as through `render(request, ...)`. Plain context rendering does not automatically run these processors. Keep them lightweight.
 
 ### 52. What is Jinja2? Is it Django's default template engine?
 
 Jinja2 is a separate Python template engine. Django uses the Django Template Language by default, but can be configured with `django.template.backends.jinja2.Jinja2`.
 
-Both support variables, inheritance, and filters, but syntax, configuration, and available extensions differ. Django template tags do not all work unchanged in Jinja2. Do not assume one engine is always faster; performance depends on the application. See [template backends](https://docs.djangoproject.com/en/5.2/topics/templates/#support-for-template-engines).
+Both support variables, inheritance, and filters, but syntax, configuration, and available extensions differ. Django template tags do not all work unchanged in Jinja2. Do not assume one engine is always faster; performance depends on the application.
 
 ### 53. Compare Form and ModelForm. How do you process a form?
 
@@ -914,7 +905,7 @@ def add_book(request):
 </form>
 ```
 
-Specify allowed ModelForm fields explicitly. Invalid submissions redisplay errors; valid submissions redirect to avoid accidental resubmission on refresh. Add authentication/permissions when the feature requires them. See [forms](https://docs.djangoproject.com/en/5.2/topics/forms/) and [ModelForms](https://docs.djangoproject.com/en/5.2/topics/forms/modelforms/).
+Specify allowed ModelForm fields explicitly. Invalid submissions redisplay errors; valid submissions redirect to avoid accidental resubmission on refresh. Add authentication/permissions when the feature requires them.
 
 ### 54. How does validation work? What are clean() and cleaned_data?
 
@@ -933,7 +924,7 @@ class PriceForm(forms.Form):
         return price
 ```
 
-Use `clean_<field>()` for one field and `Form.clean()` for rules involving several fields; call `super().clean()` when overriding it. Model validation is separate: `instance.full_clean()` runs model validation, but `instance.save()` does not automatically call it. Database constraints enforce rules even when form validation is bypassed. See [form validation](https://docs.djangoproject.com/en/5.2/ref/forms/validation/) and [model validation](https://docs.djangoproject.com/en/5.2/ref/models/instances/#validating-objects).
+Use `clean_<field>()` for one field and `Form.clean()` for rules involving several fields; call `super().clean()` when overriding it. Model validation is separate: `instance.full_clean()` runs model validation, but `instance.save()` does not automatically call it. Database constraints enforce rules even when form validation is bypassed.
 
 ### 55. How do you handle file uploads?
 
@@ -975,7 +966,7 @@ def upload_document(request):
 </form>
 ```
 
-This minimal example stores a file; a complete feature also needs access rules, size/type validation, and a success redirect. Do not trust a filename extension as proof of file contents. See [file uploads](https://docs.djangoproject.com/en/5.2/topics/http/file-uploads/).
+This minimal example stores a file; a complete feature also needs access rules, size/type validation, and a success redirect. Do not trust a filename extension as proof of file contents.
 
 ## Authentication, sessions, and security
 
@@ -992,7 +983,7 @@ from django.urls import include, path
 urlpatterns = [path("accounts/", include("django.contrib.auth.urls"))]
 ```
 
-This adds login/logout/password-management routes, but you must supply required templates and email configuration. Use `create_user()` or `set_password()` to hash passwords; assigning plaintext to `user.password` does not hash it. See [authentication](https://docs.djangoproject.com/en/5.2/topics/auth/default/).
+This adds login/logout/password-management routes, but you must supply required templates and email configuration. Use `create_user()` or `set_password()` to hash passwords; assigning plaintext to `user.password` does not hash it.
 
 ### 57. What is authorization? How do permissions and groups work?
 
@@ -1008,7 +999,7 @@ def editor_page(request):
     return HttpResponse("You can edit books.")
 ```
 
-`is_authenticated` checks login status; `has_perm("books.change_book")` checks a permission. Login alone does not grant access to every record. Django's default backend does not implement general object-level permissions; enforce ownership/query restrictions or use a suitable backend. See [permissions](https://docs.djangoproject.com/en/5.2/topics/auth/default/#permissions-and-authorization).
+`is_authenticated` checks login status; `has_perm("books.change_book")` checks a permission. Login alone does not grant access to every record. Django's default backend does not implement general object-level permissions; enforce ownership/query restrictions or use a suitable backend.
 
 ### 58. What is a custom user model? Compare AbstractUser and AbstractBaseUser.
 
@@ -1028,7 +1019,7 @@ class User(AbstractUser):
 AUTH_USER_MODEL = "accounts.User"
 ```
 
-Create the custom user in its app's initial migration. Switching later is complex. In relationships use `settings.AUTH_USER_MODEL`; when retrieving the class at runtime use `get_user_model()`. Adding an email field alone does not implement email-only login. See [custom authentication](https://docs.djangoproject.com/en/5.2/topics/auth/customizing/).
+Create the custom user in its app's initial migration. Switching later is complex. In relationships use `settings.AUTH_USER_MODEL`; when retrieving the class at runtime use `get_user_model()`. Adding an email field alone does not implement email-only login.
 
 ### 59. What is the admin interface? How do you customize it?
 
@@ -1047,7 +1038,7 @@ class BookAdmin(admin.ModelAdmin):
     list_select_related = ["author"]
 ```
 
-Keep the default `path("admin/", admin.site.urls)` in the project's URL configuration, then create a superuser. The admin is useful for trusted staff; build a dedicated interface for customer workflows. See [admin documentation](https://docs.djangoproject.com/en/5.2/ref/contrib/admin/).
+Keep the default `path("admin/", admin.site.urls)` in the project's URL configuration, then create a superuser. The admin is useful for trusted staff; build a dedicated interface for customer workflows.
 
 ### 60. Compare a regular user, staff user, and superuser.
 
@@ -1074,7 +1065,7 @@ cart_count = request.session.get("cart_count", 0)
 request.session.set_expiry(3600)  # One hour
 ```
 
-With the signed-cookie backend, data is stored in the browser: signed against tampering, not encrypted. Sessions are not always server-side. Mutating a nested dictionary may require reassignment or `request.session.modified = True`. See [sessions](https://docs.djangoproject.com/en/5.2/topics/http/sessions/).
+With the signed-cookie backend, data is stored in the browser: signed against tampering, not encrypted. Sessions are not always server-side. Mutating a nested dictionary may require reassignment or `request.session.modified = True`.
 
 ### 62. What are cookies? How do you set and read them?
 
@@ -1093,7 +1084,7 @@ def theme_view(request):
     return response
 ```
 
-This example sets a cookie for subsequent requests. Use HTTPS for `secure=True`; `httponly=True` prevents JavaScript access. Cookies are client input, so do not trust them for permissions. Signing detects tampering but does not hide values. See [cookie APIs](https://docs.djangoproject.com/en/5.2/ref/request-response/#django.http.HttpResponse.set_cookie).
+This example sets a cookie for subsequent requests. Use HTTPS for `secure=True`; `httponly=True` prevents JavaScript access. Cookies are client input, so do not trust them for permissions. Signing detects tampering but does not hide values.
 
 ### 63. What is CSRF? What does csrf_token do?
 
@@ -1107,7 +1098,7 @@ Cross-Site Request Forgery tricks a browser into sending an unwanted request usi
 </form>
 ```
 
-Use `CsrfViewMiddleware`. For same-origin AJAX, send the token in the `X-CSRFToken` header. Tokens are not necessarily stored in sessions; Django normally uses a CSRF cookie. Do not disable protection simply to silence a 403 error. CSRF protection is separate from authentication. See [CSRF protection](https://docs.djangoproject.com/en/5.2/ref/csrf/).
+Use `CsrfViewMiddleware`. For same-origin AJAX, send the token in the `X-CSRFToken` header. Tokens are not necessarily stored in sessions; Django normally uses a CSRF cookie. Do not disable protection simply to silence a 403 error. CSRF protection is separate from authentication.
 
 ### 64. What security protections does Django provide?
 
@@ -1121,7 +1112,7 @@ Use `CsrfViewMiddleware`. For same-origin AJAX, send the token in the `X-CSRFTok
 | Password exposure | Password hashing and HTTPS |
 | Cookie interception | HTTPS and secure cookie settings |
 
-Django's protections depend on correct usage and deployment settings. CORS controls which origins can read browser responses; it is not authentication or a replacement for CSRF protection. See [Django security](https://docs.djangoproject.com/en/5.2/topics/security/).
+Django's protections depend on correct usage and deployment settings. CORS controls which origins can read browser responses; it is not authentication or a replacement for CSRF protection.
 
 ## Files, caching, and signals
 
@@ -1140,7 +1131,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 <link rel="stylesheet" href="{% static 'books/style.css' %}">
 ```
 
-Place that stylesheet in `books/static/books/style.css`. `python manage.py collectstatic` gathers assets into `STATIC_ROOT` for deployment. Development `runserver` can serve static files with the usual configuration and `DEBUG=True`. Production needs a configured static-serving solution, such as a web server, CDN, or suitable middleware. See [static files](https://docs.djangoproject.com/en/5.2/howto/static-files/).
+Place that stylesheet in `books/static/books/style.css`. `python manage.py collectstatic` gathers assets into `STATIC_ROOT` for deployment. Development `runserver` can serve static files with the usual configuration and `DEBUG=True`. Production needs a configured static-serving solution, such as a web server, CDN, or suitable middleware.
 
 ### 66. What are MEDIA_ROOT and MEDIA_URL?
 
@@ -1161,7 +1152,7 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ```
 
-A model's `FileField` stores a file name/path through its storage backend, not the file's bytes in its database column. Cloud storage may use different URL/path behavior. Production uploads need configured serving and appropriate access controls; setting `MEDIA_URL` alone does not serve files. See [file management](https://docs.djangoproject.com/en/5.2/topics/files/).
+A model's `FileField` stores a file name/path through its storage backend, not the file's bytes in its database column. Cloud storage may use different URL/path behavior. Production uploads need configured serving and appropriate access controls; setting `MEDIA_URL` alone does not serve files.
 
 ### 67. What caching strategies does Django provide?
 
@@ -1190,7 +1181,7 @@ def public_home(request):
     return HttpResponse("Welcome to Book Corner")
 ```
 
-Backends include local memory, Redis, Memcached, files, and databases. Local-memory cache is process-local. Plan expiry and invalidation, and do not share private user-specific responses under a public cache key. See [caching](https://docs.djangoproject.com/en/5.2/topics/cache/).
+Backends include local memory, Redis, Memcached, files, and databases. Local-memory cache is process-local. Plan expiry and invalidation, and do not share private user-specific responses under a public cache key.
 
 ### 68. What are signals? How do you register a receiver?
 
@@ -1223,7 +1214,7 @@ class BooksConfig(AppConfig):
         from . import signals  # Register receivers
 ```
 
-Use `books.apps.BooksConfig` in `INSTALLED_APPS`. Avoid database queries during `ready()`. See [signals](https://docs.djangoproject.com/en/5.2/topics/signals/) and [application initialization](https://docs.djangoproject.com/en/5.2/ref/applications/#django.apps.AppConfig.ready).
+Use `books.apps.BooksConfig` in `INSTALLED_APPS`. Avoid database queries during `ready()`.
 
 ### 69. What are the limitations of signals?
 
@@ -1243,7 +1234,7 @@ DRF is a separate toolkit built on Django for HTTP APIs. It provides serializers
 python -m pip install djangorestframework
 ```
 
-Add `"rest_framework"` to `INSTALLED_APPS`. REST is an architectural style; DRF is a Python package. See the [DRF documentation](https://www.django-rest-framework.org/).
+Add `"rest_framework"` to `INSTALLED_APPS`. REST is an architectural style; DRF is a Python package.
 
 ### 71. What is serialization? What is a ModelSerializer?
 
@@ -1262,7 +1253,7 @@ class BookSerializer(serializers.ModelSerializer):
 
 `BookSerializer(book).data` returns the representation; use `many=True` for collections. For input, call `serializer.is_valid(raise_exception=True)` before `serializer.save()`. Choose writable fields explicitly.
 
-Django also has `django.core.serializers` for model serialization and fixtures. It is separate from DRF's API validation tools. See [DRF serializers](https://www.django-rest-framework.org/api-guide/serializers/) and [Django serialization](https://docs.djangoproject.com/en/5.2/topics/serialization/).
+Django also has `django.core.serializers` for model serialization and fixtures. It is separate from DRF's API validation tools.
 
 ### 72. How do you build a simple DRF endpoint?
 
@@ -1288,7 +1279,7 @@ from .api import BookListAPI
 urlpatterns += [path("api/", BookListAPI.as_view(), name="api-list")]
 ```
 
-With question 13's project routes, this gives `/books/api/`. Configure authentication and pagination as needed. DRF's `request.data` handles parsed request input, unlike Django's form-only `request.POST`. Session-authenticated unsafe API requests still require CSRF protection. See [generic API views](https://www.django-rest-framework.org/api-guide/generic-views/) and [authentication](https://www.django-rest-framework.org/api-guide/authentication/).
+With question 13's project routes, this gives `/books/api/`. Configure authentication and pagination as needed. DRF's `request.data` handles parsed request input, unlike Django's form-only `request.POST`. Session-authenticated unsafe API requests still require CSRF protection.
 
 ## Testing and everyday development
 
@@ -1319,7 +1310,7 @@ class BookDetailTests(TestCase):
         self.assertEqual(self.client.get(url).status_code, 404)
 ```
 
-Run `python manage.py test`. Use `SimpleTestCase` when database access is unnecessary and `TransactionTestCase` when real transaction behavior must be observed. The test client skips CSRF checks by default; use `Client(enforce_csrf_checks=True)` when testing them. See [testing](https://docs.djangoproject.com/en/5.2/topics/testing/overview/).
+Run `python manage.py test`. Use `SimpleTestCase` when database access is unnecessary and `TransactionTestCase` when real transaction behavior must be observed. The test client skips CSRF checks by default; use `Client(enforce_csrf_checks=True)` when testing them.
 
 ### 74. How do you paginate results?
 
@@ -1336,7 +1327,7 @@ def book_list(request):
     return render(request, "books/list.html", {"page_obj": page})
 ```
 
-In the template, iterate over `page_obj`; use `has_next()` and `has_previous()` through Django template syntax for navigation. `ListView` also supports `paginate_by = 10`. See [pagination](https://docs.djangoproject.com/en/5.2/topics/pagination/).
+In the template, iterate over `page_obj`; use `has_next()` and `has_previous()` through Django template syntax for navigation. `ListView` also supports `paginate_by = 10`.
 
 ### 75. What should you configure before production deployment?
 
@@ -1348,7 +1339,7 @@ Use an appropriate WSGI/ASGI server and configure the application for its enviro
 - Configure logging, backups, and database access.
 - Run `python manage.py check --deploy` with production settings.
 
-`ALLOWED_HOSTS` checks request host names; it is not a CORS origin allowlist. Do not use `runserver` as a production server. See the [deployment checklist](https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/).
+`ALLOWED_HOSTS` checks request host names; it is not a CORS origin allowlist. Do not use `runserver` as a production server.
 
 ### 76. Which management commands are useful for everyday work?
 
@@ -1365,7 +1356,7 @@ Use an appropriate WSGI/ASGI server and configure the application for its enviro
 | `collectstatic` | Gather static assets |
 | `help` | List commands and usage |
 
-Custom commands live in an app's `management/commands/` package and subclass `BaseCommand`. See [management commands](https://docs.djangoproject.com/en/5.2/ref/django-admin/).
+Custom commands live in an app's `management/commands/` package and subclass `BaseCommand`.
 
 ### 77. How should you handle dates and time zones?
 
@@ -1378,7 +1369,7 @@ now = timezone.now()
 local_now = timezone.localtime(now)
 ```
 
-`TIME_ZONE` provides the default application time zone. Avoid mixing naive datetimes with aware values. Use `auto_now_add=True` for creation timestamps, `auto_now=True` for timestamps updated during normal model saves, or a callable `default=timezone.now` when the default should remain overridable. `QuerySet.update()` does not automatically run `auto_now`. See [time zones](https://docs.djangoproject.com/en/5.2/topics/i18n/timezones/).
+`TIME_ZONE` provides the default application time zone. Avoid mixing naive datetimes with aware values. Use `auto_now_add=True` for creation timestamps, `auto_now=True` for timestamps updated during normal model saves, or a callable `default=timezone.now` when the default should remain overridable. `QuerySet.update()` does not automatically run `auto_now`.
 
 ### 78. What are internationalization and localization?
 
@@ -1390,7 +1381,7 @@ from django.utils.translation import gettext_lazy as _
 label = _("Book title")
 ```
 
-Use `{% translate "Book title" %}` in a template after `{% load i18n %}`. Lazy translation is useful in declarations evaluated before a request selects a language. Configure languages and, when needed, `LocaleMiddleware`. See [translation](https://docs.djangoproject.com/en/5.2/topics/i18n/translation/).
+Use `{% translate "Book title" %}` in a template after `{% load i18n %}`. Lazy translation is useful in declarations evaluated before a request selects a language. Configure languages and, when needed, `LocaleMiddleware`.
 
 ### 79. How do you log errors in Django?
 
@@ -1409,7 +1400,7 @@ def parse_quantity(value):
         raise
 ```
 
-`logger.exception()` inside an exception handler includes a traceback. Avoid catching every exception and returning success, which hides failures. See [logging](https://docs.djangoproject.com/en/5.2/topics/logging/).
+`logger.exception()` inside an exception handler includes a traceback. Avoid catching every exception and returning success, which hides failures.
 
 ### 80. What are fixtures? How are they different from data migrations?
 
@@ -1420,37 +1411,8 @@ python manage.py dumpdata books --indent 2 --output books_data.json
 python manage.py loaddata books_data.json
 ```
 
-A data migration changes data as part of the migration history. A fixture is loaded explicitly and is not automatically a migration. Do not export private production data into a public repository. See [initial data and fixtures](https://docs.djangoproject.com/en/5.2/howto/initial-data/).
-
-## GFG coverage checklist
-
-The linked GFG page contained **59 questions** when reviewed. This table maps every source question number to the corresponding answer here. Some overlapping source questions share one answer.
-
-| GFG | Here | GFG | Here | GFG | Here |
-| --- | --- | --- | --- | --- | --- |
-| 1 | 2, 11 | 21 | 24 | 41 | 27 |
-| 2 | 1 | 22 | 7 | 42 | 37 |
-| 3 | 3 | 23 | 2 | 43 | 36 |
-| 4 | 5 | 24 | 34 | 44 | 70 |
-| 5 | 4 | 25 | 46 | 45 | 11 |
-| 6 | 6 | 26 | 60 | 46 | 20 |
-| 7 | 59 | 27 | 52 | 47 | 37 |
-| 8 | 13 | 28 | 63 | 48 | 43 |
-| 9 | 15 | 29 | 12 | 49 | 38 |
-| 10 | 21 | 30 | 68–69 | 50 | 22 |
-| 11 | 31 | 31 | 66 | 51 | 62 |
-| 12 | 61 | 32 | 51 | 52 | 47 |
-| 13 | 65 | 33 | 15 | 53 | 10 |
-| 14 | 48 | 34 | 16 | 54 | 64 |
-| 15 | 53–54 | 35 | 49 | 55 | 56–57 |
-| 16 | 35 | 36 | 32 | 56 | 58 |
-| 17 | 36 | 37 | 67 | 57 | 18 |
-| 18 | 41 | 38 | 19 | 58 | 71 |
-| 19 | 42 | 39 | 33 | 59 | 73 |
-| 20 | 23 | 40 | 28–29 | — | — |
-
-The original README's topics, including custom model fields, through models, QuerySets, and inheritance, are included above. Additional questions cover validation, permissions, pagination, deployment, time zones, logging, and everyday commands.
+A data migration changes data as part of the migration history. A fixture is loaded explicitly and is not automatically a migration. Do not export private production data into a public repository.
 
 ### Connect with me
 
-[![GitHub](https://img.shields.io/badge/GitHub-Profile-black?logo=github)](https://github.com/udyalakvivek)
+[GitHub](https://github.com/udyalakvivek)
